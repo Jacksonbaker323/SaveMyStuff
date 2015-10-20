@@ -22,7 +22,13 @@ class Property(models.Model):
 
 class PropertyTypes(models.Model):
     #Property types
-    TYPES = ('String', 'Integer', 'Date', 'Currency', 'Image')
+    TYPES = (
+        ('String','String'),
+        ('Integer','Integer'),
+        ('Date','Date'),
+        ('Currency','Currency'),
+        ('Image','Image'),
+    )
     property_type_of_property = models.ForeignKey(Property)
     property_type_name = models.CharField(max_length=50, choices=TYPES)
 
