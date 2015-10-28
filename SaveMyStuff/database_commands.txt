@@ -1,0 +1,12 @@
+#Determine migrations that need to be made
+python manage.py makemigrations polls
+
+#Create migration scripts (replace 0001 with number from previous step)
+python manage.py sqlmigrate polls 0001
+
+#Execute migration scripts
+python manage.py migrate
+
+
+#Django-Rest-API link
+http://www.django-rest-framework.org/
