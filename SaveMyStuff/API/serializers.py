@@ -7,7 +7,7 @@ from API import models
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'is_staff']
+        fields = ['url', 'username', 'email']
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Category
-        fields = ['category_name']
+        fields = ['category_name', 'category_owner']
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = models.Category.objects.all()

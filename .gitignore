@@ -3,3 +3,4 @@ include/
 lib/
 *.pyc
 *.sqlite3
+.idea/*
