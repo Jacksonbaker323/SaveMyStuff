@@ -1,40 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import User
+
+from pygments.lexers import get_all_lexers
+from pygments.styles import get_all_styles
+
+LEXERS = [item for item in get_all_lexers() if item[1]]
+LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
+STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
 
 class Category(models.Model):
-    #category_of_owner = models.ForeignKey(User)
     category_name = models.CharField(max_length=200)
-    category_owner = models.ForeignKey(User, related_name="owner")
+
+    class Meta:
+        ordering = ()
 
     def __str__(self):
         return self.category_name
-'''
-class Property(models.Model):
-    property_of_category = models.ForeignKey(Category)
-    property_name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.property_name
-
-class PropertyTypes(models.Model):
-    #Property types
-    TYPES = (
-        ('String','String'),
-        ('Integer','Integer'),
-        ('Date','Date'),
-        ('Currency','Currency'),
-        ('Image','Image'),
-    )
-    property_type_of_property = models.ForeignKey(Property)
-    property_type_name = models.CharField(max_length=50, choices=TYPES)
-
-    def __str__(self):
-        return self.property_type_name
-'''
-'''
-class Item(models.Model):
-    item_name = models.CharField(max_length=200)
-
-class ItemProperty(models.Model):
-    item_property_value = models.CharField(max_length=200)
-'''

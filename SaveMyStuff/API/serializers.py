@@ -1,25 +1,16 @@
-from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
+from rest_framework import serializers
 from API import models
 
+class CategorySerializer(serializers.Serializer):
+    pk = serializers.IntegerField(read_only=True)
+    category_name = serializers.CharField(required=True, allow_blank=False, max_length=200)
 
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email']
+    def create(self, validated_data):
+        #Create and return a Category class with the validated data
+        return Category.objects.create(**validated_data)
 
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = models.Category
-        fields = ['category_name', 'category_owner']
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = models.Category.objects.all()
-    serializer_class = CategorySerializer
+    def update(self, instance, validated_data):
+        #Update an existing Category instance
+        instance.category_name = validated_data.get('category_name', instance.category_name)
+        instance.save()
+        return instance
