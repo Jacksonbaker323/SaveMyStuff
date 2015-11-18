@@ -1,28 +1,17 @@
 from rest_framework import serializers
 from API.models import Category
-
-
-#Fully expanded class
-'''
-class CategorySerializer(serializers.Serializer):
-    pk = serializers.IntegerField(read_only=True)
-    category_name = serializers.CharField(required=True, allow_blank=False, max_length=200)
-
-    def create(self, validated_data):
-        #Create and return a Category class with the validated data
-        return Category.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        #Update an existing Category instance
-        instance.category_name = validated_data.get('category_name', instance.category_name)
-        instance.save()
-        return instance
-'''
-
-#Minimized class
+from django.contrib.auth.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
+        #Point the serializer at the model definition and list the fields that you want to be displayed
         model = Category
-        #Adding a trailing ',' because Python only recognizes this as a tuple if there are multiple items in it
-        fields = ('id', 'category_name')
+        fields = ('id', 'category_name', 'owner')
+        owner = serializers.ReadOnlyField(source='owner.username')
+
+class UserSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'categories')

@@ -2,14 +2,19 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf.urls import url
 from API import views
+from django.conf.urls import include
+
 
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^categories/$', views.category_list),
-    url(r'^categories/(?P<pk>[0-9]+)/$', views.category_detail),
+    #url(r'^admin/', include(admin.site.urls)),
+    url(r'^categories/$', views.CategoryList.as_view()),
+    url(r'^categories/(?P<pk>[0-9]+)/$', views.CategoryDetail.as_view()),
+    url(r'^users/$', views.UserList.as_view()),
+    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 ]
 
+urlpatterns += [
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
 
-#Finished up here: http://www.django-rest-framework.org/tutorial/1-serialization/

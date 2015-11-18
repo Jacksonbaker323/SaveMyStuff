@@ -1,50 +1,39 @@
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
 from API.models import Category
-from API.serializers import CategorySerializer
+from API.serializers import *
+from rest_framework import generics
+from django.contrib.auth.models import User
+from rest_framework import permissions
+from API.permissions import *
 
-class JSONResponse(HttpResponse):
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-@csrf_exempt
-def category_list(request):
-    #List all of the categories
-
-    if request.method == 'GET':
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
-        return JSONResponse(serializer.data)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CategorySerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+#TODO: Setup Token Auth: http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
 
 
-@csrf_exempt
-def category_detail(request, pk):
-    try:
-        category = Category.objects.get(pk=pk)
-    except Category.DoesNotExist:
-        return HttpResponse(status=404)
 
-    if request.method == 'GET':
-        serializer = CategorySerializer(category)
-        return JSONResponse(serializer.data)
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = CategorySerializer(category, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
-    elif request.method == 'DELETE':
-        category.delete()
-        return HttpResponse(status=204)
+#TODO: Determine why I can see things that my user did not create in the list view
+#TODO CONT: Ideally I'd be able to only show a list of the current users categories
+#TODO TOREAD: http://www.django-rest-framework.org/api-guide/permissions/
+
+class CategoryList(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsOwner,)
+
+    #Add the user to any 'save' request
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsOwner,)
+
+
+
+###--------- User Classes -------------
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
