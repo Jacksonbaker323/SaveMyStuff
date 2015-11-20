@@ -15,12 +15,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('category_name', models.CharField(max_length=200)),
                 ('owner', models.ForeignKey(related_name='categories', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': (),
             },
+        ),
+        migrations.CreateModel(
+            name='Property',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('property_name', models.CharField(max_length=200)),
+                ('property_type', models.CharField(max_length=1, choices=[('I', 'Integer'), ('S', 'String'), ('D', 'Date')])),
+            ],
+            options={
+                'ordering': (),
+            },
+        ),
+        migrations.AddField(
+            model_name='category',
+            name='property',
+            field=models.ForeignKey(related_name='properties', to='API.Property'),
         ),
     ]
