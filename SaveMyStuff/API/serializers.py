@@ -1,25 +1,17 @@
+from rest_framework import serializers
+from API.models import Category
 from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
-from API import models
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        #Point the serializer at the model definition and list the fields that you want to be displayed
+        model = Category
+        fields = ('id', 'category_name', 'owner')
+        owner = serializers.ReadOnlyField(source='owner.username')
 
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
+
     class Meta:
         model = User
-        fields = ['url', 'username', 'email']
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = models.Category
-        fields = ['category_name', 'category_owner']
-
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = models.Category.objects.all()
-    serializer_class = CategorySerializer
+        fields = ('id', 'username', 'categories')

@@ -1,3 +1,26 @@
-from django.shortcuts import render
 
-# Create your views here.
+from API.models import Category
+from API.serializers import *
+
+from django.contrib.auth.models import User
+from rest_framework import viewsets
+
+#TODO: Setup Token Auth: http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    #Only returns the categories that the user has access to
+    #TODO: Determine the best way to create a class that handles this automatically across different models
+    def get_queryset(self):
+        return self.request.user.categories.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
