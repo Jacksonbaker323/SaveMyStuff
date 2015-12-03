@@ -4,3 +4,4 @@ lib/
 *.pyc
 *.sqlite3
 .idea/*
+.Python

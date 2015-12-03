@@ -1,1 +1,1 @@
-virtualenv . && pip install -r requirements.txt
+virtualenv . && source bin/activate && pip3 install -r requirements.txt

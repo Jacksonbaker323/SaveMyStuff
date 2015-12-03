@@ -11,8 +11,16 @@ class Category(models.Model):
         return self.category_name
 
 class Property(models.Model):
-    property_name = models.CharField(max_length=200)
+    PROPERTY_TYPES = (
+        ('S', 'String'),
+        ('I', 'Integer'),
+        ('D', 'Date'),
+        ('P', 'Image'),
+    )
 
+    category = models.ForeignKey('Category', related_name='properties')
+    property_name = models.CharField(max_length=200)
+    property_type = models.CharField(choices=PROPERTY_TYPES, max_length=1)
 
     class Meta:
         ordering = ()

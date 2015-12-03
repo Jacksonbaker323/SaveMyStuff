@@ -1,5 +1,5 @@
 
-from API.models import Category
+from API.models import Category, Property
 from API.serializers import *
 
 from django.contrib.auth.models import User
@@ -24,3 +24,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class PropertyViewSet(viewsets.ModelViewSet):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializer
