@@ -10,12 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'categories')
 
-
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = ('id', 'property_name', 'property_type', 'category')
-
 
 class CategorySerializer(serializers.ModelSerializer):
     #Setting the definition of the "Owner" field used below and making it read only
@@ -27,7 +25,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'category_name', 'owner', 'properties')
 
-
 class ItemSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
     category = serializers.PrimaryKeyRelatedField(many=False, queryset=Category.objects.all(), read_only=False)
@@ -38,7 +35,6 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class PropertyItemSerializer(serializers.ModelSerializer):
     #TOFIX: When creating a property item I get the following error: Cannot assign "6": "PropertyItem.item" must be a "Item" instance.
-    item = serializers.ChoiceField(choices=Item.objects.values_list('id', 'item_name'))
     #Show all of the available properties
     #TODO: Restrict this to only the properties for the selected category
     property = serializers.PrimaryKeyRelatedField(many=False, queryset=Property.objects.all(), read_only=False)
