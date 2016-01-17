@@ -5,3 +5,4 @@ lib/
 *.sqlite3
 .idea/*
 .Python
+.idea
